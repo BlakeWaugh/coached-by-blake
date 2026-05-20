@@ -480,27 +480,55 @@ function handlePrev() {
     }
 }
 
-function handleSubmit() {
-    console.log('Form Data:', formData);
-    
-    // Show success screen
-    document.getElementById('formContent').style.display = 'none';
-    document.querySelector('.button-container').style.display = 'none';
-    
-    let successMsg = `Thanks for completing your intake form, ${formData.fullName.split(' ')[0]}!<br>Blake will review your information and contact you at ${formData.phone}`;
-    
-    if (formData.hasReferral) {
-        successMsg += `<br><p class="success-referral">🎉 Great referral! You and ${formData.referralName} will both receive referral rewards!</p>`;
+async function handleSubmit() {
+
+    try {
+
+        const response = await fetch('https://formspree.io/f/mkoeoypy', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify(formData)
+        });
+
+        if (response.ok) {
+
+            // Hide form
+            document.getElementById('formContent').style.display = 'none';
+            document.querySelector('.button-container').style.display = 'none';
+
+            let successMsg = `
+                Thanks for completing your intake form, 
+                ${formData.fullName.split(' ')[0]}!
+                <br>
+                Blake will review your information and contact you at ${formData.phone}.
+            `;
+
+            if (formData.hasReferral) {
+                successMsg += `
+                    <br>
+                    <p class="success-referral">
+                        🎉 Great referral! You and ${formData.referralName}
+                        will both receive referral rewards!
+                    </p>
+                `;
+            }
+
+            document.getElementById('successMessage').innerHTML = successMsg;
+            document.getElementById('successScreen').style.display = 'flex';
+
+        } else {
+
+            alert('Submission failed. Please try again.');
+
+        }
+
+    } catch (error) {
+
+        console.error(error);
+        alert('Something went wrong. Please try again.');
+
     }
-    
-    document.getElementById('successMessage').innerHTML = successMsg;
-    document.getElementById('successScreen').style.display = 'flex';
-    
-    // Here you would normally send the data to a server
-    // Example:
-    // fetch('/api/submit-form', {
-    //     method: 'POST',
-    //     headers: { 'Content-Type': 'application/json' },
-    //     body: JSON.stringify(formData)
-    // });
 }
