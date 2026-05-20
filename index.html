@@ -24,15 +24,28 @@
     </div>
  
     <!-- Form Container -->
-    <div class="form-container">
+   <div class="form-container">
+
+    <form action="https://formspree.io/f/mkoeoypy" method="POST" id="intakeForm">
+
         <div id="formContent"></div>
- 
+
         <!-- Navigation Buttons -->
         <div class="button-container">
-            <button id="backBtn" class="btn btn-secondary" onclick="handlePrev()">← Back</button>
-            <button id="nextBtn" class="btn btn-primary" onclick="handleNext()">Next →</button>
+            <button type="button" id="backBtn" class="btn btn-secondary" onclick="handlePrev()">← Back</button>
+
+            <button type="button" id="nextBtn" class="btn btn-primary" onclick="handleNext()">
+                Next →
+            </button>
+
+            <button type="submit" id="submitBtn" class="btn btn-primary" style="display:none;">
+                Submit Application
+            </button>
         </div>
-    </div>
+
+    </form>
+
+</div>
  
     <!-- Success Screen (Hidden by default) -->
     <div id="successScreen" class="success-screen" style="display: none;">
