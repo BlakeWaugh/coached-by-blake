@@ -483,15 +483,87 @@ function handlePrev() {
 function handleSubmit() {
     console.log('Form Data:', formData);
     
-    // Show success screen
-    document.getElementById('formContent').style.display = 'none';
-    document.querySelector('.button-container').style.display = 'none';
-    
-    let successMsg = `Thanks for completing your intake form, ${formData.fullName.split(' ')[0]}!<br>Blake will review your information and contact you at ${formData.phone}`;
-    
-    if (formData.hasReferral) {
-        successMsg += `<br><p class="success-referral">🎉 Great referral! You and ${formData.referralName} will both receive referral rewards!</p>`;
-    }
+    // Send to Formspree
+    fetch('https://formspree.io/f/YOUR_FORM_ID', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            // CLIENT DETAILS
+            'Full Name': formData.fullName,
+            'Date of Birth': formData.dateOfBirth,
+            'Phone Number': formData.phone,
+            'Email Address': formData.email,
+            'Residential Address': formData.address,
+            'Emergency Contact Name': formData.emergencyContactName,
+            'Emergency Contact Phone': formData.emergencyContactPhone,
+            'Emergency Contact Relationship': formData.emergencyContactRelationship,
+            'GP Clinic': formData.gpClinic,
+            
+            // HEALTH SCREENING
+            'Heart Condition': formData.healthQuestions.heartCondition,
+            'Chest Pain During Exercise': formData.healthQuestions.chestPainExercise,
+            'Chest Pain Last Month': formData.healthQuestions.chestPainMonth,
+            'Dizziness/Fainting': formData.healthQuestions.dizziness,
+            'Asthma/Breathing Issues': formData.healthQuestions.asthma,
+            'High Blood Pressure': formData.healthQuestions.highBloodPressure,
+            'Diabetes': formData.healthQuestions.diabetes,
+            'Prescription Medications': formData.healthQuestions.prescriptionMeds,
+            'Current Injuries': formData.healthQuestions.injuries,
+            'Recent Surgery': formData.healthQuestions.surgery,
+            'Pregnant/Postpartum': formData.healthQuestions.pregnancy,
+            'Medical Advice Against Exercise': formData.healthQuestions.medicalAdvice,
+            'Health Details': formData.healthDetails,
+            
+            // MEDICAL HISTORY
+            'Medical Conditions & Injuries': formData.medicalHistory,
+            
+            // FITNESS & GOALS
+            'Fitness Goals': formData.goals.join(', '),
+            'Goals Description': formData.goalsDescription,
+            'Training Experience': formData.trainingExperience,
+            'Training Days Per Week': formData.trainingDaysPerWeek,
+            
+            // REFERRAL
+            'Has Referral': formData.hasReferral,
+            'Referral Name': formData.referralName,
+            'Referral Relationship': formData.referralRelationship,
+            
+            // CONSENTS
+            'Informed Consent': formData.informedConsent,
+            'Informed Consent Initials': formData.informedConsentInitials,
+            'Liability Waiver': formData.liabilityWaiver,
+            'Liability Waiver Initials': formData.liabilityWaiverInitials,
+            'Photography Consent': formData.photography,
+            'Photography Initials': formData.photographyInitials,
+            'Emergency Medical Consent': formData.emergencyConsent,
+            'Emergency Medical Initials': formData.emergencyConsentInitials,
+        })
+    })
+    .then(response => {
+        if (response.ok) {
+            // Show success screen
+            document.getElementById('formContent').style.display = 'none';
+            document.querySelector('.button-container').style.display = 'none';
+            
+            let successMsg = `Thanks for completing your intake form, ${formData.fullName.split(' ')[0]}!<br>Blake will review your information and contact you at ${formData.phone}`;
+            
+            if (formData.hasReferral) {
+                successMsg += `<br><p class="success-referral">🎉 Great referral! You and ${formData.referralName} will both receive referral rewards!</p>`;
+            }
+            
+            document.getElementById('successMessage').innerHTML = successMsg;
+            document.getElementById('successScreen').style.display = 'flex';
+        } else {
+            alert('There was an error submitting your form. Please try again.');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('There was an error submitting your form. Please try again.');
+    });
+}
     
     document.getElementById('successMessage').innerHTML = successMsg;
     document.getElementById('successScreen').style.display = 'flex';
